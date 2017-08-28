@@ -62,7 +62,7 @@ django:
     # Choose the way to deploy it: 'apache2-mod-wsgi', 'develop' // develop not implemented yet
     use: 'apache2-mod-wsgi'
     # Specify the canonical hostname for this service (i.e. the virtual host)
-    name: ~
+    name: "{{name}}"
     # Specify any name aliases for this service
     name_aliases: []
     #name_aliases: ['django.example.localdomain']
