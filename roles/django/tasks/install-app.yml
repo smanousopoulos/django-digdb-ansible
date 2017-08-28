@@ -1,0 +1,41 @@
+---
+ # Install from git if available
+ - name: Install app from repo
+   become_user: djangoer
+   pip: 
+     virtualenv: '{{django.pyenv_dir}}'
+     name: 'git+{{app_repo_url}}'
+     state: present
+     extra_args: '--upgrade -e'
+   #ignore_errors: yes
+   when: app_repo_url is defined
+
+ - name: Check if project exists
+   find: paths={{django.pyenv_dir}}/src/{{project}} patterns="manage.py"
+   register: manage_py
+
+ - name: Create django project
+   become_user: djangoer
+   command: "{{django.pyenv_dir}}/bin/django-admin.py startproject {{project}} {{django.pyenv_dir}}/src/{{project}}"
+   when: manage_py.matched|int == 0
+
+ - name: Install pip requirements for app
+   become_user: djangoer
+   pip:
+     virtualenv: '{{django.pyenv_dir}}'
+     requirements: '{{django.pyenv_dir}}/src/{{django.full_app}}/requirements.txt'
+
+ - name: Copy settings.py template
+   template: 
+     src: 'etc/django/settings.py' 
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}'
+     owner: djangoer
+     mode: 0644
+  
+ - name: Collect static files
+   become_user: djangoer
+   django_manage:
+     command: "collectstatic --noinput"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+

@@ -1,0 +1,105 @@
+---
+#
+# Base DJANGO
+#
+
+django_site_id: 'default'
+project: 'default'
+name: Default Project
+description: ~
+
+db: 
+  user: ~
+  pass: ~
+  name: ~
+
+develop:
+  host: localhost
+  port: 8000
+
+django:
+  version: '1.9.5'
+
+  name: "{{name}}"
+  secret_key: ~ 
+  debug: True
+
+  
+  # A UUID for this application instance; generate one per cluster!
+  instance_uuid: ~
+   
+  config_name: 'development'
+  
+  # Provide a control-local directory to keep generated secrets under
+  secrets_dir: 'files/secrets'
+
+  # Basic directories
+  pyenv_dir: '/var/local/django/default/pyenv'
+  static_dir: '/var/local/django/default/static'
+  uploads_dir: '/var/local/django/default/media'
+  schema_dir: '/var/local/django/default/schema'
+  temp_dir: '/var/tmp/django/default'
+  run_dir: '/var/local/django/default/run'
+  log_dir: '/var/local/django/default/log'
+  solr_dir: '/etc/solr/conf'
+
+  # Provide Solr endpoint URLs 
+  solr:
+    core_url: 'http://localhost:8080/solr/'
+  
+  app: 'digdb'
+  full_app: 'django-digdb'
+
+  wsgi: "{{project}}/wsgi.py"
+
+  # Provide a JSON file with valid licenses records, either as a URL or as a local file (relative to config-file).
+  # See an example at: https://github.com/PublicaMundi/django/blob/dev.publicamundi.eu/licenses.json
+  #licenses_url: http://licenses.opendefinition.org/licenses/groups/django.json
+
+  # Serve as a WSGI application
+  serve:
+    apache_conf: 000-default
+    # Choose the way to deploy it: 'apache2-mod-wsgi', 'develop' // develop not implemented yet
+    use: 'apache2-mod-wsgi'
+    # Specify the canonical hostname for this service (i.e. the virtual host)
+    name: ~
+    # Specify any name aliases for this service
+    name_aliases: []
+    #name_aliases: ['django.example.localdomain']
+    # The URL path prefix for the application
+    url_prefix: '/'
+    # Spawn WSGI processes/threads (applicable for 'apache2-mod-wsgi')
+    wsgi_opts:
+      num_processes: 2
+      num_threads: 15
+    # The following are paster-only options (applicable for 'paster', 'apache2/paster')
+    paster_opts:
+      listen_address: '127.0.0.1'
+      port: 5000  
+
+  # Site info
+  site:   
+    # Basic info
+    title: "{{name}}"
+    description: "{{description}}" 
+    # Logos
+    favicon_url: '/images/icons/django.ico'
+    logo_url: '/base/images/django-logo.png'
+
+  admin:
+    user: admin
+    email: admin@example.com
+    pass: admin
+
+  # Email settings
+  email: 
+    errors_to: webmaster@django.localdomain
+    errors_from: djangoer@django.localdomain
+    smtp: ~
+
+  # Configure HTTP sessions
+  session:
+    cookie_domain: ~
+    cookie_lifetime: ~
+
+password_spec: 'chars=ascii_letters,digits length=9' 

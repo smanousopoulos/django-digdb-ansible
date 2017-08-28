@@ -1,0 +1,13 @@
+---
+  
+  # Install python for ansible to work
+  - name: Install python
+    raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+  # Install APT Packages
+  - name: Update APT index
+    apt: update_cache=yes
+
+  - name: Install required APT packages
+    apt: pkg={{item}} state=latest
+    with_items: "{{packages}}"

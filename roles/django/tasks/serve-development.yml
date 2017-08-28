@@ -1,0 +1,10 @@
+---
+
+ - name: Start Django runserver
+   become_user: djangoer
+   django_manage:
+     command: "runserver {{develop.host}}:{{develop.port}}"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+   notify: ['print-django-url']
+ 

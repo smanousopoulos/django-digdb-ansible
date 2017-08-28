@@ -1,0 +1,4 @@
+"""empty URL Configuration
+"""
+
+urlpatterns = []

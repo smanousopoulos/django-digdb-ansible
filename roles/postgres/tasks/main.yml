@@ -1,0 +1,22 @@
+---
+# tasks file for postgres
+  - name: Trust key for PostgreSQL APT repos
+    apt_key: url=https://www.postgresql.org/media/keys/ACCC4CF8.asc state=present
+
+  - name: Add PostgreSQL APT repos
+    copy: src=etc/apt/sources.list.d/pgdg.list dest=/etc/apt/sources.list.d/pgdg.list
+
+  - name: Update APT index
+    apt: update_cache=yes
+
+  - name: Necessary Postgres packages
+    apt: name={{item}}
+    with_items:
+      - "postgresql-{{ postgres_version }}"
+      - "postgresql-contrib-{{ postgres_version }}"
+      - libpq-dev
+      - python-psycopg2
+      - "postgresql-{{ postgres_version }}-postgis-{{ postgis_version }}"
+
+  - name: Ensure database service is running
+    service: name=postgresql state=started

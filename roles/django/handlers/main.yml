@@ -1,0 +1,18 @@
+---
+  - name: restart-apache2
+    service: name=apache2 state=restarted
+ 
+  - name: restart-tomcat
+    service: name=tomcat7 state=restarted
+ 
+  - name: ask-reboot
+    debug: { msg: " ** A system reboot is needed" }
+
+  - name: print-django-url 
+    debug: { msg: " ** Browse http://{{django.serve.name}}{{django.serve.url_prefix}}" }
+
+  - name: print-django-debug-url
+    debug: { msg: " ** Browse http://{{django.serve.name}}:{{django.serve.paster_opts.port}}" }
+    when: django.serve.paster_opts.listen_address == '0.0.0.0'
+
+

@@ -1,0 +1,20 @@
+---
+
+ - name: Enable wsgi module for Apache2
+   apache2_module: state=present name=wsgi
+   notify: ['restart-apache2']
+
+ - name: Generate vhost configuration
+   template: 
+     src: 'etc/apache2/sites-available/wsgi' 
+     dest: '/etc/apache2/sites-available/{{django.serve.apache_conf}}.conf'
+   notify: ['restart-apache2']
+
+ - name: Enable Apache2 vhost
+   file:
+     state: link
+     force: yes
+     path: '/etc/apache2/sites-enabled/{{django.serve.apache_conf}}.conf'
+     src: '../sites-available/{{django.serve.apache_conf}}.conf'
+   notify: ['restart-apache2', 'print-django-url']
+ 

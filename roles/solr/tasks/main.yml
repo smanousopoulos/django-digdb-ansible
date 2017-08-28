@@ -1,0 +1,22 @@
+---
+  # add apt repo
+  - name: Add java apt repo
+    apt_repository: repo={{repo}} state=present
+
+  - name: Update APT index
+    apt: update_cache=yes  
+
+  - name: Install Java 1.7
+    apt: name=openjdk-7-jre state=present
+
+  - name: Add group "tomcat"
+    group: name=tomcat
+
+  - name: Install Solr with tomcat
+    apt: name=solr-tomcat
+
+  - name: Start Tomcat
+    service: name=tomcat7 state=started enabled=yes
+
+  - name: Wait for Tomcat to start
+    wait_for: port={{http_port}}

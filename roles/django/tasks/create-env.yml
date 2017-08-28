@@ -1,0 +1,65 @@
+---
+
+ # Create user and group
+ 
+ - name: Create django group
+   group: name=djangoer state=present 
+
+ - name: Create django user
+   user: name=djangoer group=djangoer state=present
+
+ # Create basic directories
+
+ - name: Create root directory for static files
+   file: path={{django.static_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+ 
+ - name: Create root directory for file uploads
+   file: path={{django.uploads_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+ 
+ - name: Create directory for temporary session/cache data
+   file: path={{django.temp_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+ 
+ - name: Create directory to keep pids for running daemons 
+   file: path={{django.run_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+ 
+ - name: Create directory for logs 
+   file: path={{django.log_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+
+ #
+ # Create virtual environment
+ # 
+
+ - name: Create virtual environment directory
+   file: path={{django.pyenv_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+ 
+ - name: Create src directory
+   file: path={{django.pyenv_dir}}/src state=directory mode=0775 owner=djangoer group=djangoer
+ 
+ - name: Create directory for schema
+   file: path={{django.schema_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+
+ - name: Create project src directory 
+   file: path={{django.pyenv_dir}}/src/{{project}} state=directory mode=0775 owner=djangoer group=djangoer
+
+ - name: Create virtual environment
+   command: virtualenv {{django.pyenv_dir}} creates={{django.pyenv_dir}}
+   register: virtualenv_result
+ 
+ - name: Set ownership for virtual environment tree
+   file: path={{django.pyenv_dir}} state=directory recurse=yes owner=djangoer group=djangoer 
+   when: virtualenv_result.changed
+
+ - name: Install newest version of pip in virtual environment
+   become_user: djangoer
+   pip: name=pip extra_args='--upgrade' virtualenv={{django.pyenv_dir}}
+  
+ - name: Create a shortcut to activate the environment
+   become_user: djangoer
+   copy:
+     content: |
+       export DJANGO_PYENV={{django.pyenv_dir}}
+       export DJANGO_CONFIG={{django.pyenv_dir}}/src/django/config.ini
+       . {{django.pyenv_dir}}/bin/activate
+       cd {{django.pyenv_dir| dirname}}
+     mode: 0744
+     dest: ~djangoer/pyenv.sh

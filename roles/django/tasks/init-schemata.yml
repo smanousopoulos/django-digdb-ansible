@@ -1,0 +1,71 @@
+---
+
+ - name: Copy empty urls.py
+   template: 
+     src: 'etc/django/urls_empty.py' 
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}/urls.py'
+     owner: djangoer
+     mode: 0644
+
+ - name: Copy schema(ta) folder
+   become_user: djangoer
+   copy: 
+     src: 'schema/'
+     dest: '{{django.schema_dir}}'
+
+ - name: Import schema(ta) 
+   become_user: djangoer
+   django_manage:
+     command: "import_schema {{django.schema_dir}} --output {{django.pyenv_dir}}/src/{{django.full_app}}/{{django.app}}"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+
+ - name: Make migrations
+   become_user: djangoer
+   django_manage:
+     command: "makemigrations --noinput"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+
+ - name: Make migrations for app
+   become_user: djangoer
+   django_manage:
+     command: "makemigrations --noinput {{django.app}}"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+
+ - name: Migrate
+   become_user: djangoer
+   django_manage:
+     command: "migrate --noinput"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+
+ - name: Build solr schema
+   become_user: djangoer
+   django_manage:
+     command: build_solr_schema
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+   register: solr_schema
+
+ - name: Copy to solr dir
+   copy: content="{{solr_schema.out}}" dest="{{django.solr_dir}}/schema.xml" force=yes
+   notify: ['restart-tomcat']
+
+ - name: Rebuild index
+   become_user: djangoer
+   django_manage:
+     command: "rebuild_index --noinput"
+     app_path: "{{django.pyenv_dir}}/src/{{project}}"
+     virtualenv: "{{django.pyenv_dir}}"
+   notify: ['restart-tomcat']
+
+ - name: Copy urls.py template
+   template: 
+     src: 'etc/django/urls.py' 
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}'
+     owner: djangoer
+     mode: 0644
+
+ 

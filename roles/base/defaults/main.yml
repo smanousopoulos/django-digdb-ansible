@@ -1,0 +1,20 @@
+---
+# The variables below can be overriden at a group or host level.
+
+packages:
+- sudo
+- vim
+- vim-scripts
+- screen
+- less
+- bash-completion
+- wget
+- curl
+- ca-certificates
+- rsync
+- git
+- mercurial
+- htop
+- bzip2
+- p7zip-full
+- virtualenv

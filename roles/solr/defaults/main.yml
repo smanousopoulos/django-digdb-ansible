@@ -1,0 +1,6 @@
+---
+repo: ppa:openjdk-r/ppa
+
+http_port: 8080
+https_port: 8443
+

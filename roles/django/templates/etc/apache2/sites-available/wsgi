@@ -1,0 +1,55 @@
+<VirtualHost *:80>
+    ServerAdmin "{{django.email.errors_to}}"
+    ServerName "{{django.serve.name}}"
+    Alias /static {{django.static_dir}}
+    Alias /media {{django.uploads_dir}}
+    
+    {% for alias in django.serve.name_aliases -%}
+    ServerAlias "{{alias}}"
+    {% endfor %}
+    
+    DocumentRoot /var/www
+    <Directory />
+        Options FollowSymLinks
+        AllowOverride None
+    </Directory>
+    <Directory /var/www/>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride None
+        Order allow,deny
+        allow from all
+    </Directory>
+
+    # Serve static files
+    <Directory {{django.static_dir}}>
+    Require all granted
+    </Directory>
+
+    # Serve media files
+    <Directory {{django.uploads_dir}}>
+    Require all granted
+    </Directory>
+
+    # Serve Django WSGI application
+   
+    <Directory {{django.pyenv_dir}}/src/{{project}}>
+    <Files wsgi.py>
+    Require all granted
+    </Files>
+    </Directory>
+ 
+    {% set url_prefix = django.serve.url_prefix| default("/") -%}
+    {% set num_processes = django.serve.wsgi_opts.num_processes| int| default(2) -%}
+    {% set num_threads = django.serve.wsgi_opts.num_threads| int| default(12) -%}
+	 
+    WSGIScriptAlias "{{url_prefix}}" {{django.pyenv_dir}}/src/{{project}}/{{django.wsgi}}
+    WSGIPassAuthorization On
+    WSGIDaemonProcess "django_{{django_site_id}}" user=djangoer group=djangoer display-name="{{django_site_id}}" processes={{num_processes}} threads={{num_threads}} python-home={{django.pyenv_dir}} python-path={{django.pyenv_dir}}/src/{{project}}
+    WSGIProcessGroup "django_{{django_site_id}}"
+
+    ErrorLog "${APACHE_LOG_DIR}/error.django-{{django_site_id}}.log"
+    LogLevel info
+    LogFormat "%{Host}i:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined_1
+    CustomLog "${APACHE_LOG_DIR}/access.django-{{django_site_id}}.log" vhost_combined_1
+</VirtualHost>
+
