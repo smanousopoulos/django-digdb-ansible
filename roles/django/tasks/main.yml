@@ -1,22 +1,20 @@
 ---
 
  - include: install-apt-packages.yml
+
  - include: create-env.yml
+
  - include: configure-db.yml
- - include: install-django.yml
+
  - include: install-app.yml
+
  - include: init-schemata.yml
 
  - include: serve-with-apache2-wsgi.yml
    when: django.serve.use == 'apache2-mod-wsgi'
-   tags: ['deploy']
 
  - include: serve-development.yml
    when: django.serve.use == 'develop'
-   tags: ['deploy']
-
- # Dump current configuration
 
  - file: path=/etc/ansible/facts.d state=directory mode=0775 
-   tags: ['dump-facts']
 

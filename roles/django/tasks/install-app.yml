@@ -1,5 +1,12 @@
 ---
- # Install from git if available
+ 
+ - name: Install django from repo
+   become_user: djangoer
+   pip: 
+     virtualenv: '{{django.pyenv_dir}}'
+     name: 'django=={{django.version}}'
+     state: present 
+
  - name: Install app from repo
    become_user: djangoer
    pip: 

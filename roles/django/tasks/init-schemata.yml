@@ -68,4 +68,7 @@
      owner: djangoer
      mode: 0644
 
- 
+ - name: Create default superuser
+   become_user: djangoer
+   raw: "echo \"from django.contrib.auth.models import User; User.objects.create_superuser('{{django.admin.user}}', '{{django.admin.email}}', '{{django.admin.pass}}')\" | {{django.pyenv_dir}}/bin/python {{django.pyenv_dir}}/src/{{project}}/manage.py shell"
+
