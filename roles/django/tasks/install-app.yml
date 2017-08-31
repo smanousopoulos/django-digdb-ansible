@@ -46,3 +46,10 @@
      app_path: "{{django.pyenv_dir}}/src/{{project}}"
      virtualenv: "{{django.pyenv_dir}}"
 
+ - name: Copy default thumbnail
+   become_user: djangoer
+   copy: 
+     src: 'unknown.png'
+     dest: '{{django.static_dir}}'
+
+
