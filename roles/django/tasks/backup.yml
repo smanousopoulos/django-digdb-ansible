@@ -1,0 +1,7 @@
+---
+ - name: Creates weekly backup cronjob
+   cron: minute="05" hour="10" weekday="sun"
+         name="Backup postgres tables (weekly schedule)"
+         cron_file="backup-weekly"
+         user="root"
+         job="{{django.pyenv_dir}}/bin/python {{django.pyenv_dir}}/src/{{project}}/manage.py dumpdata --indent 2 > {{django.backup_dir}}/backup-$(date +\%d-\%m-\%Y).db.json"

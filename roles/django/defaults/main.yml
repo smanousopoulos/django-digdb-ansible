@@ -42,6 +42,7 @@ django:
   run_dir: '/var/local/django/default/run'
   log_dir: '/var/local/django/default/log'
   solr_dir: '/etc/solr/conf'
+  backup_dir: '/var/local/django/default/backup'
 
   # Provide Solr endpoint URLs 
   solr:

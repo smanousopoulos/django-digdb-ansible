@@ -25,6 +25,9 @@
  - name: Create directory for logs 
    file: path={{django.log_dir}} state=directory mode=0775 owner=djangoer group=djangoer
 
+ - name: Create directory for backups
+   file: path={{django.backup_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+
  #
  # Create virtual environment
  # 
