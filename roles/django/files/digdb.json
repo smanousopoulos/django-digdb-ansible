@@ -1,0 +1,6 @@
+{
+  "excavation_name": "Excavation",
+  "id_field": "id",
+  "description_field": "description",
+  "thumbnail_field": "photo"
+}

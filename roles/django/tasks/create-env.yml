@@ -16,6 +16,9 @@
  - name: Create root directory for file uploads
    file: path={{django.uploads_dir}} state=directory mode=0775 owner=djangoer group=djangoer
  
+ - name: Create root directory for translations
+   file: path={{django.locale_dir}} state=directory mode=0775 owner=djangoer group=djangoer
+
  - name: Create directory for temporary session/cache data
    file: path={{django.temp_dir}} state=directory mode=0775 owner=djangoer group=djangoer
  

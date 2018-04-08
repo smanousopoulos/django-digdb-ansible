@@ -2,27 +2,31 @@
 #
 # Base DJANGO
 #
-
 django_site_id: 'default'
 project: 'default'
-name: Default Project
+name: 'Default project' 
 description: ~
 
+locale: 'en'
+  
 db: 
   user: ~
   pass: ~
   name: ~
 
-develop:
-  host: localhost
-  port: 8000
+#custom_app:
+#  name: ~
+
+# Supported features: login_required_everywhere
+features:
+  login_required_everywhere: true
 
 django:
   version: '1.9.5'
 
   name: "{{name}}"
   secret_key: ~ 
-  debug: True
+  debug: false
 
   
   # A UUID for this application instance; generate one per cluster!
@@ -34,10 +38,12 @@ django:
   secrets_dir: 'files/secrets'
 
   # Basic directories
+  default_dir: '/var/local/django/default'
   pyenv_dir: '/var/local/django/default/pyenv'
   static_dir: '/var/local/django/default/static'
   uploads_dir: '/var/local/django/default/media'
   schema_dir: '/var/local/django/default/schema'
+  locale_dir: '/var/local/django/default/locale'
   temp_dir: '/var/tmp/django/default'
   run_dir: '/var/local/django/default/run'
   log_dir: '/var/local/django/default/log'
@@ -50,6 +56,7 @@ django:
   
   app: 'digdb'
   full_app: 'django-digdb'
+  repo: ~ 
 
   wsgi: "{{project}}/wsgi.py"
 

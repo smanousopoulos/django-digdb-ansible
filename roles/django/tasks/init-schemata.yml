@@ -61,6 +61,13 @@
      virtualenv: "{{django.pyenv_dir}}"
    notify: ['restart-tomcat']
 
+ - name: Copy settings.py template
+   template: 
+     src: 'etc/django/settings.py' 
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}'
+     owner: djangoer
+     mode: 0644
+
  - name: Copy urls.py template
    template: 
      src: 'etc/django/urls.py' 

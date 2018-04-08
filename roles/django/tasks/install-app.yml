@@ -1,5 +1,5 @@
 ---
- 
+
  - name: Install django from repo
    become_user: djangoer
    pip: 
@@ -11,15 +11,20 @@
    become_user: djangoer
    pip: 
      virtualenv: '{{django.pyenv_dir}}'
-     name: 'git+{{app_repo_url}}'
+     name: 'git+{{django.repo}}#egg=django-digdb'
      state: present
      extra_args: '--upgrade -e'
-   #ignore_errors: yes
-   when: app_repo_url is defined
 
  - name: Check if project exists
    find: paths={{django.pyenv_dir}}/src/{{project}} patterns="manage.py"
    register: manage_py
+
+ - name: Copy custom app
+   become_user: djangoer
+   when: custom_app
+   copy: 
+     src: 'custom_app/'
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{custom_app.name}}'
 
  - name: Create django project
    become_user: djangoer
@@ -34,11 +39,17 @@
 
  - name: Copy settings.py template
    template: 
-     src: 'etc/django/settings.py' 
-     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}'
+     src: 'etc/django/settings_before_schema.py' 
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}/settings.py'
      owner: djangoer
      mode: 0644
-  
+
+ - name: Copy static files folder
+   become_user: djangoer
+   copy: 
+     src: 'static/'
+     dest: '{{django.static_dir}}/digdb'
+
  - name: Collect static files
    become_user: djangoer
    django_manage:
@@ -46,10 +57,27 @@
      app_path: "{{django.pyenv_dir}}/src/{{project}}"
      virtualenv: "{{django.pyenv_dir}}"
 
- - name: Copy default thumbnail
+ - name: Copy jinja2 env fix
    become_user: djangoer
    copy: 
-     src: 'unknown.png'
-     dest: '{{django.static_dir}}'
+     src: 'jinja2_env.py'
+     dest: '{{django.pyenv_dir}}/src/{{project}}/{{project}}'
 
+ - name: Copy configuration json
+   become_user: djangoer
+   copy:
+     src: 'digdb.json'
+     dest: '{{django.pyenv_dir}}/src/{{project}}'
+
+ - name: Copy translations file
+   become_user: djangoer
+   copy: 
+     src: 'locale/'
+     dest: '{{django.locale_dir}}'
+
+ - name: Compile translation messages
+   become_user: djangoer
+   command: "{{django.pyenv_dir}}/bin/django-admin.py compilemessages"
+   args:
+     chdir: "{{django.default_dir}}"
 

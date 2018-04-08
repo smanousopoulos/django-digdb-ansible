@@ -39,9 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'digdb',
-{% if custom_app %}
-    '{{custom_app.name}}',
-{% endif %}
     'multiselectfield',
     'haystack',
     'rest_framework',
@@ -58,9 +55,6 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-{% if features.login_required_everywhere %}
-    'digdb.login_required_middleware.LoginRequiredMiddleware',
-{% endif %}
 ]
 
 ROOT_URLCONF = '{{project}}.urls'
@@ -77,6 +71,7 @@ TEMPLATES = [
     },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        #'BACKEND': 'django.template.backends.jinja2.Jinja2',
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {

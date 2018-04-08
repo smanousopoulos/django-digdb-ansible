@@ -11,6 +11,14 @@ Quick start
 
 1. Setup variables in roles/django/vars/main.yml. Check roles/django/defaults/main.yml for default values
 
-2. Create hosts file. See hosts-example for reference 
+2. Copy schema file(s) in roles/django/files/schema folder
 
-3. Run `ansible-playbook -i hosts site.yml`
+3. Create hosts file. See hosts-example for reference 
+
+4. Run `ansible-playbook -i hosts site.yml`
+
+Notes
+-----------
+
+Default admin username/password is admin/admin. Make sure you change the password after first login
+

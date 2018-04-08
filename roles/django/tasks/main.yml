@@ -2,9 +2,9 @@
 
  - include: install-apt-packages.yml
 
- - include: create-env.yml
-
  - include: configure-db.yml
+ 
+ - include: create-env.yml
 
  - include: install-app.yml
 
