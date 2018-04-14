@@ -20,16 +20,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "{{django.secret_key}} "
+SECRET_KEY = "{{django.secret_key}}"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = {{django.debug}}
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['{{host}}']
 
 # Application definition
-
 INSTALLED_APPS = [
     'djangocms_admin_style',
     'django.contrib.admin',
@@ -177,3 +175,13 @@ MEDIA_URL = '/media/'
 
 STATIC_ROOT = '{{django.static_dir}}'
 STATIC_URL = '/static/'
+
+# Security
+
+SECURE_CONTENT_TYPE_NOSNIFF=True
+SECURE_BROWSER_XSS_FILTER=True
+SESSION_COOKIE_SECURE=True
+CSRF_COOKIE_SECURE=True
+CSRF_COOKIE_HTTPONLY=True
+X_FRAME_OPTIONS='Deny'
+

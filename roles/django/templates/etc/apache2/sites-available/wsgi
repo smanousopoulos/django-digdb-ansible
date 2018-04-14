@@ -1,4 +1,10 @@
-<VirtualHost *:80>
+<VirtualHost *:80> 
+  ServerName "{{django.serve.name}}"
+  DocumentRoot /var/www
+  Redirect permanent / https://{{host}}/
+</VirtualHost>
+
+<VirtualHost _default_:443>
     ServerAdmin "{{django.email.errors_to}}"
     ServerName "{{django.serve.name}}"
     Alias /static {{django.static_dir}}
@@ -7,8 +13,8 @@
     {% for alias in django.serve.name_aliases -%}
     ServerAlias "{{alias}}"
     {% endfor %}
-    
-    DocumentRoot /var/www
+   
+   	DocumentRoot /var/www
     <Directory />
         Options FollowSymLinks
         AllowOverride None
@@ -51,5 +57,9 @@
     LogLevel info
     LogFormat "%{Host}i:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined_1
     CustomLog "${APACHE_LOG_DIR}/access.django-{{django_site_id}}.log" vhost_combined_1
+
+		SSLEngine on
+		SSLCertificateFile {{ssl.cert_path}}
+		SSLCertificateKeyFile {{ssl.key_path}} 
 </VirtualHost>
 

@@ -4,6 +4,35 @@
    apache2_module: state=present name=wsgi
    notify: ['restart-apache2']
 
+ - name: Enable ssl module for Apache2
+   apache2_module: state=present name=ssl
+   notify: ['restart-apache2']
+
+ - name: Create ssl directory
+   file:
+     path: '{{ssl.base_dir}}'
+     state: directory
+     mode: 0775
+
+ - name: Generate an OpenSSL private key
+   openssl_privatekey:
+     path: '{{ssl.key_path}}'
+
+ - name: Generate an OpenSSL CSR
+   openssl_csr:
+     path: '{{ssl.csr_path}}'
+     privatekey_path: '{{ssl.key_path}}'
+     common_name: '{{host}}'
+
+ - name: Generate a Self Signed OpenSSL certificate
+   openssl_certificate:
+     path: '{{ssl.cert_path}}'
+     privatekey_path: '{{ssl.key_path}}'
+     csr_path: '{{ssl.csr_path}}'
+     provider: selfsigned
+     valid_at: 21001221162800Z
+
+
  - name: Generate vhost configuration
    template: 
      src: 'etc/apache2/sites-available/wsgi' 
@@ -16,5 +45,5 @@
      force: yes
      path: '/etc/apache2/sites-enabled/{{django.serve.apache_conf}}.conf'
      src: '../sites-available/{{django.serve.apache_conf}}.conf'
-   notify: ['restart-apache2', 'print-django-url']
+   notify: ['restart-apache2', 'restart-tomcat', 'print-django-url']
  

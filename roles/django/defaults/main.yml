@@ -6,6 +6,7 @@ django_site_id: 'default'
 project: 'default'
 name: 'Default project' 
 description: ~
+host: ~
 
 locale: 'en'
   
@@ -21,13 +22,17 @@ db:
 features:
   login_required_everywhere: true
 
+ssl:
+  base_dir: /etc/ssl/certs/
+  key_path: /etc/ssl/certs/key.pem
+  cert_path: /etc/ssl/certs/cert.pem
+  csr_path: /etc/ssl/private/cert-ca.scr
+
 django:
   version: '1.9.5'
-
   name: "{{name}}"
   secret_key: ~ 
   debug: false
-
   
   # A UUID for this application instance; generate one per cluster!
   instance_uuid: ~
