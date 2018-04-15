@@ -81,3 +81,9 @@
    args:
      chdir: "{{django.default_dir}}"
 
+ - name: Copy photos
+   become_user: djangoer
+   copy:
+     src: 'photos/'
+     dest: '{{django.uploads_dir}}'
+
